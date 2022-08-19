@@ -81,3 +81,86 @@ col3 = QVBoxLayout()
 col3.addLayout(row2, stretch=2)
 col3.addLayout(row4, stretch=8)
 col3.addLayout(row3, stretch=4)
+col3.addStretch(1)
+col3.setSpacing(5)
+
+
+
+def show_result():
+    RadioGroupBox.hide()
+    AnsGroupBox.show()
+    btn_ok.setText('Следующий вопрос')
+
+def show_question():
+    AnsGroupBox.hide()
+    RadioGroupBox.show()
+    btn_ok.setText('Ответить')
+    
+    RadioGroup.setExclusive(False)
+    rbtn_1.setChecked(False)
+    rbtn_2.setChecked(False)
+    rbtn_3.setChecked(False)
+    rbtn_4.setChecked(False)
+    #asdasd
+    RadioGroup.setExclusive(True)
+
+
+
+def test():
+    if btn_ok.text() == 'Ответить':
+        show_result()
+    else:
+        show_question()
+
+
+answers = [rbtn_1, rbtn_2, rbtn_3, rbtn_4]
+
+
+def ask(q):
+    shuffle(answers)
+    answers[0].setText(q.right_answer)
+    answers[1].setText(q.wrong1)
+    answers[2].setText(q.wrong2)
+    answers[3].setText(q.wrong3)
+    question.setText(q.question)
+    lb_correct.setText(q.right_answer)
+    show_question()
+
+
+
+def show_correct(res):
+    lb_result.setText(res)
+    show_result()    
+
+
+
+def check_answer():
+    if answers[0].isChecked():
+        show_correct('Правильно!')
+
+    if answers[1].isChecked() or answers[2].isChecked() or answers[3].isChecked():
+        show_correct('Не правильно!')
+
+
+def next_question():
+    main_win.cur_question += 1
+    if main_win.cur_question == len(questions_list):
+        main_win.cur_question = 0
+    q = questions_list[main_win.cur_question]
+    ask(q)
+
+
+def click_OK():
+    if btn_ok.text() == 'Ответить':
+        check_answer()
+    else:
+        next_question()
+
+
+
+main_win.cur_question = -1
+next_question()
+main_win.setLayout(col3)
+btn_ok.clicked.connect(click_OK)
+main_win.show()
+app.exec_()
